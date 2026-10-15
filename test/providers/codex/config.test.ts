@@ -8,6 +8,7 @@ import { loadCodexProfilesFromEnv, resolveCommand } from '../../../src/providers
 test('loadCodexProfilesFromEnv keeps Codex OpenAI as the default profile', () => {
   const result = loadCodexProfilesFromEnv({
     CODEX_REAL_BIN: '/usr/bin/codex',
+    CODEX_DEFAULT_MODEL: 'gpt-5.6-terra',
     CODEX_COMPAT_PROVIDER_ID: 'compat-example',
     CODEX_COMPAT_PROVIDER_NAME: 'Compatible Example',
     CODEX_COMPAT_API_KEY: 'sk-test',
@@ -18,6 +19,7 @@ test('loadCodexProfilesFromEnv keeps Codex OpenAI as the default profile', () =>
   assert.equal(result.defaultProviderProfileId, 'openai-default');
   assert.equal(result.profiles[0]?.providerKind, 'openai-native');
   assert.equal(result.profiles[0]?.config.cliBin, '/usr/bin/codex');
+  assert.equal(result.profiles[0]?.config.defaultModel, 'gpt-5.6-terra');
   assert.equal(result.profiles[1]?.id, 'compat-example');
   assert.equal(result.profiles[1]?.providerKind, 'openai-compatible');
   assert.equal(result.profiles[1]?.config.apiKeyEnv, 'CODEX_COMPAT_API_KEY');

@@ -79,7 +79,7 @@ export async function officialQrLogin(
         qrcode,
       });
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (isRetryableQrStatusError(error)) {
         await sleep(1000);
         continue;
       }
@@ -149,6 +149,17 @@ export async function officialQrLogin(
   }
 
   return null;
+}
+
+function isRetryableQrStatusError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  const code = (error as NodeJS.ErrnoException).code;
+  return error.name === 'AbortError'
+    || code === 'ETIMEDOUT'
+    || code === 'ECONNRESET'
+    || code === 'EAI_AGAIN';
 }
 
 function defaultSleep(ms: number) {

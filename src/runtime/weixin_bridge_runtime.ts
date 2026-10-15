@@ -524,7 +524,9 @@ export class WeixinBridgeRuntime {
       textPreview: truncateDebugText(event?.text),
       attachmentCount: Array.isArray(event?.attachments) ? event.attachments.length : 0,
     });
-    const suppressTyping = Boolean(options.suppressTyping);
+    // ponytail: final-only delivery is the default; callers can explicitly opt into live updates.
+    const suppressProgressDelivery = options.suppressProgressDelivery !== false;
+    const suppressTyping = options.suppressTyping !== false;
     const typingStart = suppressTyping
       ? Promise.resolve()
       : this.safeSendTyping(event.externalScopeId, 'start');
@@ -534,7 +536,7 @@ export class WeixinBridgeRuntime {
     try {
       const response = await this.bridgeCoordinator.handleInboundEvent(event, {
         onProgress: async (progress) => {
-          if (options.suppressProgressDelivery) {
+          if (suppressProgressDelivery) {
             return;
           }
           await this.handleProgressUpdate(event, streamState, progress);

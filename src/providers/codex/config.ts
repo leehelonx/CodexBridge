@@ -90,7 +90,7 @@ export function loadCodexProfilesFromEnv(
         cliBin: codexRealBin,
         launchCommand: normalizeString(env.CODEX_APP_LAUNCH_CMD),
         autolaunch: parseBoolean(env.CODEX_APP_AUTOLAUNCH, false),
-        defaultModel: null,
+        defaultModel: normalizeString(env.CODEX_DEFAULT_MODEL),
         providerLabel: 'openai',
         backendBaseUrl: null,
         apiKeyEnv: null,
